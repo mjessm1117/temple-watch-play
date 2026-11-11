@@ -4,7 +4,7 @@
 // Incrementing CACHE_VERSION will kick off the install event and force
 // previously cached resources to be updated from the network.
 /** @type {string} */
-const CACHE_VERSION = 'web3-b02754c4fc4af75f1b05';
+const CACHE_VERSION = '1794373018|5235530';
 /** @type {string} */
 const CACHE_PREFIX = 'Temple Watch — R-sw-cache-';
 const CACHE_NAME = CACHE_PREFIX + CACHE_VERSION;
@@ -21,7 +21,7 @@ const CACHEABLE_FILES = ["index.wasm","index.pck"];
 const FULL_CACHE = CACHED_FILES.concat(CACHEABLE_FILES);
 
 self.addEventListener('install', (event) => {
-	event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(CACHED_FILES.map((file) => new Request(file, {cache: 'reload'})))).then(() => self.skipWaiting()));
+	event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(CACHED_FILES)));
 });
 
 self.addEventListener('activate', (event) => {
@@ -72,7 +72,7 @@ async function fetchAndCache(event, cache, isCacheable) {
 	let response = await event.preloadResponse;
 	if (response == null) {
 		// Or, go over network.
-		response = await self.fetch(event.request, {cache: 'reload'});
+		response = await self.fetch(event.request);
 	}
 
 	if (ENSURE_CROSSORIGIN_ISOLATION_HEADERS) {
@@ -164,5 +164,3 @@ self.addEventListener('message', (event) => {
 	});
 });
 
-
-self.addEventListener('activate', (event) => { event.waitUntil(self.clients.claim()); });
