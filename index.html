@@ -50,28 +50,33 @@
   </div>
   <script src="index.js"></script>
   <script>
-    const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":44486992,"index.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4,"serviceWorker":"index.service.worker.js"};
+    const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":44657268,"index.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4,"serviceWorker":"index.service.worker.js"};
     // Render behind the notch; the game positions controls inside the measured safe area.
     GODOT_CONFIG.canvasResizePolicy = 0;
     const canvas = document.getElementById('canvas');
     window.tw_hud_rects = () => window.tw_hud_data || null;
     function fitVisibleViewport() {
       const visible = window.visualViewport;
-      const height = visible ? visible.height : window.innerHeight;
-      document.documentElement.style.setProperty('--visible-width', `${visible ? visible.width : window.innerWidth}px`);
-      document.documentElement.style.setProperty('--visible-height', `${height}px`);
-      document.documentElement.style.setProperty('--visible-left', `${visible ? visible.offsetLeft : 0}px`);
-      document.documentElement.style.setProperty('--visible-top', `${visible ? visible.offsetTop : 0}px`);
+      const cssWidth = visible ? visible.width : window.innerWidth;
+      const cssHeight = visible ? visible.height : window.innerHeight;
+      const left = visible ? visible.offsetLeft : 0;
+      const top = visible ? visible.offsetTop : 0;
+      document.documentElement.style.setProperty('--visible-width', `${cssWidth}px`);
+      document.documentElement.style.setProperty('--visible-height', `${cssHeight}px`);
+      document.documentElement.style.setProperty('--visible-left', `${left}px`);
+      document.documentElement.style.setProperty('--visible-top', `${top}px`);
       const safe = getComputedStyle(document.getElementById('safe-area-probe'));
-      window.templeSafeArea = Object.fromEntries(['top', 'right', 'bottom', 'left']
-        .map(side => [side, Math.max(parseFloat(safe.getPropertyValue(`padding-${side}`)) || 0,
+      window.templeSafeArea = Object.fromEntries(['top', 'right', 'bottom', 'left'].map(side =>
+        [side, Math.max(0, parseFloat(safe.getPropertyValue(`padding-${side}`)) || 0,
           Number(window.templeTestSafeArea?.[side] || 0))]));
-      window.scrollTo(0, 0);
       const rect = canvas.getBoundingClientRect();
       const ratio = window.devicePixelRatio || 1;
-      const width = Math.max(1, Math.floor(rect.width * ratio));
-      const pixels = Math.max(1, Math.floor(rect.height * ratio));
-      if (canvas.width !== width || canvas.height !== pixels) { canvas.width = width; canvas.height = pixels; }
+      const width = Math.max(1, Math.round(rect.width * ratio));
+      const height = Math.max(1, Math.round(rect.height * ratio));
+      if (canvas.width !== width || canvas.height !== height) { canvas.width = width; canvas.height = height; }
+      window.twViewport = {width: rect.width, height: rect.height, left: rect.left, top: rect.top,
+        backingWidth: canvas.width, backingHeight: canvas.height, dpr: ratio,
+        safe: window.templeSafeArea, touch: navigator.maxTouchPoints > 0 || matchMedia('(pointer: coarse)').matches};
     }
     window.tw_refresh_viewport = fitVisibleViewport;
     if (window.visualViewport) {
