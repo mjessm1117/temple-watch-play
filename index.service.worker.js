@@ -4,7 +4,7 @@
 // Incrementing CACHE_VERSION will kick off the install event and force
 // previously cached resources to be updated from the network.
 /** @type {string} */
-const CACHE_VERSION = 'web3-61fd3e9aade7feb192fa';
+const CACHE_VERSION = 'web3-004b1b1944725ecffd5a';
 /** @type {string} */
 const CACHE_PREFIX = 'Temple Watch — R-sw-cache-';
 const CACHE_NAME = CACHE_PREFIX + CACHE_VERSION;
